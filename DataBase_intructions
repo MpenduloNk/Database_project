@@ -1,0 +1,133 @@
+CREATE TABLE Customers(
+	CustomerID serial primary key,
+	FirstName character varying(100) NOT NULL,
+	LastName character varying(100) NOT NULL,
+	Gender character varying(20),
+	Address character varying(200),
+	Phone character varying(10),
+	Email character varying(100) NOT NULL,
+	City character varying(50),
+	Country character varying(20)
+);
+
+CREATE TABLE Employees(
+	EmployeeID serial primary key,
+	FirstName character varying(100) NOT NULL,
+	LastName character varying(100) NOT NULL,
+	Email character varying(100) NOT NULL,
+	JobTitle character varying(100)
+);
+
+CREATE TABLE Payments(
+	PaymentID serial primary key,
+	CustomerId integer references Customers(CustomerID),
+	PaymentDate date NOT NULL DEFAULT current_date,
+	Amount decimal NOT NULL DEFAULT 0.00
+);
+
+CREATE TABLE Products(
+	ProductID serial primary key,
+	ProductName character varying(100),
+	Description character varying(300),
+	BuyPrice decimal NOT NULL DEFAULT 0.00
+);
+
+CREATE TABLE Orders(
+	OrderID serial primary key,
+	ProductId integer references Products(ProductID),
+	PaymentId integer references Payments(PaymentID),
+	FullFilledEmployeeID int references Employees(EmployeeID),
+	DateRequired date NOT NULL DEFAULT current_date,
+	DateShip date NOT NULL DEFAULT current_date,
+	Status character varying(20)
+);
+
+
+VALUES ('John',	'Hibert', 'Male', '284 chaucer st',	'084789657', 'john@gmail.com', 'Johannesburg', 'South Africa'),
+	   ('Thando', 'Sithole', 'Female', '240 Sect 1', '0794445584', 'thando@gmail.com', 'Cape Town', 'South Africa'),
+	   ('Leon',	'Glen',	'Male',	'81 Everton Rd,Gillits', '0820832830', 'Leon@gmail.com', 'Durban', 'South Africa'),
+       ('Charl', 'Muller', 'Male', '290A Dorset Ecke', '+448562553', 'Charl.muller@yahoo.com', 'Berlin', 'Germany'),
+       ('Julia', 'Stein', 'Female', '2 Wernerring',	'+442445058', 'Js234@yahoo.com', 'Frankfur', 'Germany');
+	   
+INSERT INTO Employees(FirstName, LastName, Email, JobTitle)
+VALUES ('Kani',	'Matthew', 'mat@gmail.com', 'Manager'),
+       ('Lesly', 'Cronje', 'LesC@gmail.com', 'Clerk'),
+       ('Gideon', 'Maduku',	'm@gmail.com', 'Accountant');
+	   
+select *
+from Employees;
+
+INSERT INTO Payments(CustomerId, PaymentDate, Amount)
+VALUES (1, '01-09-2018', 150.75),
+       (5, '03-09-2018', 150.75),
+	   (4, '03-09-2018', 700.60);
+	   
+select *
+from Payments;
+
+INSERT INTO Products(ProductName, Description, BuyPrice)
+VALUES ('Harley Davidson Chopper', 'This replica features working kickstand, front suspension, gear-shift lever', 150.75),
+       ('Classic Car', 'Turnable front wheels, steering function', 550.75),
+	   ('Sports car', 'Turnable front wheels, steering function', 700.60);
+	   
+select *
+from Products;
+
+INSERT INTO Orders(ProductId, PaymentId, FullFilledEmployeeID, DateRequired, DateShip, Status)
+VALUES (1, 1, 2, '05-09-2018', '07-09-2018', 'Not shipped'),
+       (1, 2, 2, '04-09-2018', '03-09-2018', 'Shipped'),
+	   (3, 3, 3, '06-09-2018', '08-09-2018','Not shipped');
+	   
+select *
+from Orders;
+
+select *
+from Customers;
+
+select FirstName, LastName
+from Customers;
+
+select FirstName, LastName
+from Customers
+where CustomerID = 1;
+
+UPDATE Customers
+SET FirstName = 'Lerato', LastName = 'Mabitso'
+WHERE CustomerID = 1;
+
+DELETE FROM Customers
+WHERE CustomerID = 2;
+
+select COUNT(Status) Shipped
+from Orders
+where Status = 'Shipped';
+
+select COUNT(Status) NotShipped
+from Orders
+where Status = 'Not shipped';
+
+select MAX(Amount) Max_payment
+from Payments;
+
+select *
+from Customers
+order by Country ASC;
+
+select *
+from Products
+where BuyPrice Between 100 AND 600;
+
+select *
+from Customers
+where City = 'Cape Town'
+or City = 'Durban';
+
+select *
+from Products
+where BuyPrice > 500;
+
+select SUM(Amount) Total
+from Payments;
+
+select Avg(BuyPrice) Rands
+from Products;
